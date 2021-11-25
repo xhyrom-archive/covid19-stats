@@ -4,4 +4,4 @@ API Endpoints:
  - /path/to/file/latest.txt
  - /path/to/file/latest.json
 
-Update every **10:15**
+Updates every **10:15**
