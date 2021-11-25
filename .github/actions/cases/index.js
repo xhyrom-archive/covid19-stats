@@ -33,7 +33,7 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         .setHeading('TYPE', '%', 'Positive', 'Negative')
         .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
         .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
-        .addRow('Total', formatNumber(AG.positivity_rate + PCR.positivity_rate), formatNumber(AG.positives_count + PCR.positives_count)), formatNumber(AG.negatives_count + PCR.negatives_count)
+        .addRow('Total', formatNumber(AG.positivity_rate + PCR.positivity_rate), formatNumber(AG.positives_count + PCR.positives_count), formatNumber(AG.negatives_count + PCR.negatives_count))
 
     let date = new Date();
 
