@@ -1,6 +1,9 @@
 name: Covid19-Cases
 
-on: [workflow_dispatch]
+on: 
+  schelude:
+    - cron: "15 10 * * *"
+  workflow_dispatch:
 
 jobs:
   cases:

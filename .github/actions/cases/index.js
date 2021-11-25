@@ -4,6 +4,8 @@ const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+String.prototype.formatNumber = this.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
     const octokit = github.getOctokit(github_token);
@@ -28,14 +30,22 @@ const github = require('@actions/github');
     let table = new AsciiTable('Cases');
 
     table
-        .setHeading('TYP', '%', 'Positive', 'Negative')
+        .setHeading('TYPE', '%', 'Positive', 'Negative')
         .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
         .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
-        .addRow('Total', AG.positivity_rate + PCR.positivity_rate, AG.positives_count + PCR.positives_count, AG.negatives_count + PCR.negatives_count)
+        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate).formatNumber(), (AG.positives_count + PCR.positives_count).formatNumber(), (AG.negatives_count + PCR.negatives_count).formatNumber())
 
     let date = new Date();
 
     let files = {};
+    let content = [
+        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count}`,
+        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count}`,
+        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
+        ``,
+        table.toString()
+    ]
+
     files['latest.txt'] = { contents: table.toString() }
     files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: table.toString() }
 
