@@ -7334,7 +7334,7 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         `INCREASE=${hospitalizations.increase}`,
         `INTENSIVE=${hospitalizations.patient.intensive}`,
         `VENTILATION=${hospitalizations.patient.ventilation}`,
-        `TOTAL=${hospitalizations.total}`
+        `TOTAL=${hospitalizations.total}`,
         ``,
         table.toString(),
         tableHos.toString()
