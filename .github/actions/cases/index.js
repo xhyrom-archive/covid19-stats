@@ -44,10 +44,10 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
         ``,
         table.toString()
-    ]
+    ].join('\n');
 
-    files['latest.txt'] = { contents: table.toString() }
-    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: table.toString() }
+    files['latest.txt'] = { contents: content }
+    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
