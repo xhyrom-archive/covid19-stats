@@ -4,7 +4,7 @@ const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const formatNumber = (string) => string.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
 
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
