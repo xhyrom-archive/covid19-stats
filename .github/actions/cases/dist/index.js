@@ -10,7 +10,7 @@ const AsciiTable = __nccwpck_require__(8432);
 const core = __nccwpck_require__(8714);
 const github = __nccwpck_require__(9550);
 
-String.prototype.formatNumber = this.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+String.prototype.formatNumber = () => this.replace(/(.)(?=(\d{3})+$)/g,'$1,');
 
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
