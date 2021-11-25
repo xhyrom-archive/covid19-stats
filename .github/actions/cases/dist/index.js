@@ -7317,7 +7317,15 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
     ].join('\n');
 
     files['latest.txt'] = { contents: content }
+    files['latest.json'] = { contents: JSON.stringify({
+        AG,
+        PCR
+    }) }
     files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
+    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
+        AG,
+        PCR
+    }) }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
@@ -7331,25 +7339,6 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
           }
         ],
     });
-
-    let apiFiles = {};
-    apiFiles['stats.table.txt'] = { contents: content };
-    apiFiles['stats.json'] = { contents: JSON.stringify({
-        AG,
-        PCR
-    }) }
-
-    await octokit.rest.repos.createOrUpdateFiles({
-        owner: "xHyroM",
-        repo: "covid19-stats",
-        branch: "gh-pages",
-        changes: [
-            {
-                message: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} stats`,
-                files: apiFiles,
-            }
-        ]
-    })
 })();
 })();
 
