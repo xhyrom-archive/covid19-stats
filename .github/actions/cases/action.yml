@@ -1,0 +1,5 @@
+name: "Cases"
+description: Update cases
+runs:
+  using: "node12"
+  run: "dist/index.js"
