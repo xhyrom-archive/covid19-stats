@@ -1,76 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8992:
-/***/ (function(__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) {
-
-const hyttpo = __nccwpck_require__(3950).default;
-const fs = __nccwpck_require__(5747);
-const AsciiTable = __nccwpck_require__(8432);
-const core = __nccwpck_require__(8714);
-const github = __nccwpck_require__(9550);
-
-String.prototype.formatNumber = () => this.replace(/(.)(?=(\d{3})+$)/g,'$1,');
-
-(async() => {
-    const github_token = core.getInput('GITHUB_TOKEN', { required: true });
-    const octokit = github.getOctokit(github_token);
-    __nccwpck_require__(2861)(octokit);
-
-    const web = await (await hyttpo.get('https://korona.gov.sk/koronavirus-na-slovensku-v-cislach/')).data;
-    let PCR = {
-        positives_count: parseInt(web.split('<!-- REPLACE:koronastats-positives-delta -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
-        negatives_count: parseInt(web.split('<!-- REPLACE:koronastats-lab-tests-delta -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
-        positivity_rate: web.split('<!-- REPLACE:koronastats-lab-tests-ratio -->')[1].split('<!-- /REPLACE -->')[0].replace(',', '.').replace('%', '').replace(/\s+/g, '')
-    }
-    PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
-
-    const AG = await (await hyttpo.request({
-        url: 'https://data.korona.gov.sk/api/ag-tests/in-slovakia',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })).data.page[0]
-
-    let table = new AsciiTable('Cases');
-
-    table
-        .setHeading('TYPE', '%', 'Positive', 'Negative')
-        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
-        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
-        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate).formatNumber(), (AG.positives_count + PCR.positives_count).formatNumber(), (AG.negatives_count + PCR.negatives_count).formatNumber())
-
-    let date = new Date();
-
-    let files = {};
-    let content = [
-        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count}`,
-        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count}`,
-        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
-        ``,
-        table.toString()
-    ]
-
-    files['latest.txt'] = { contents: table.toString() }
-    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: table.toString() }
-
-    await octokit.rest.repos.createOrUpdateFiles({
-        owner: "xHyroM",
-        repo: "covid19-stats",
-        branch: "master",
-        createBranch: false,
-        changes: [
-          {
-            message: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} stats`,
-            files: files,
-          }
-        ],
-    });
-})();
-
-/***/ }),
-
 /***/ 9281:
 /***/ (function(module) {
 
@@ -7335,12 +7265,75 @@ module.exports = require("zlib");
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(8992);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+const hyttpo = __nccwpck_require__(3950).default;
+const fs = __nccwpck_require__(5747);
+const AsciiTable = __nccwpck_require__(8432);
+const core = __nccwpck_require__(8714);
+const github = __nccwpck_require__(9550);
+
+const formatNumber = (string) => string.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+
+(async() => {
+    const github_token = core.getInput('GITHUB_TOKEN', { required: true });
+    const octokit = github.getOctokit(github_token);
+    __nccwpck_require__(2861)(octokit);
+
+    const web = await (await hyttpo.get('https://korona.gov.sk/koronavirus-na-slovensku-v-cislach/')).data;
+    let PCR = {
+        positives_count: parseInt(web.split('<!-- REPLACE:koronastats-positives-delta -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        negatives_count: parseInt(web.split('<!-- REPLACE:koronastats-lab-tests-delta -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        positivity_rate: web.split('<!-- REPLACE:koronastats-lab-tests-ratio -->')[1].split('<!-- /REPLACE -->')[0].replace(',', '.').replace('%', '').replace(/\s+/g, '')
+    }
+    PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
+
+    const AG = await (await hyttpo.request({
+        url: 'https://data.korona.gov.sk/api/ag-tests/in-slovakia',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })).data.page[0]
+
+    let table = new AsciiTable('Cases');
+
+    table
+        .setHeading('TYPE', '%', 'Positive', 'Negative')
+        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
+        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
+        .addRow('Total', formatNumber(AG.positivity_rate + PCR.positivity_rate), formatNumber(AG.positives_count + PCR.positives_count)), formatNumber(AG.negatives_count + PCR.negatives_count)
+
+    let date = new Date();
+
+    let files = {};
+    let content = [
+        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count}`,
+        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count}`,
+        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
+        ``,
+        table.toString()
+    ]
+
+    files['latest.txt'] = { contents: table.toString() }
+    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: table.toString() }
+
+    await octokit.rest.repos.createOrUpdateFiles({
+        owner: "xHyroM",
+        repo: "covid19-stats",
+        branch: "master",
+        createBranch: false,
+        changes: [
+          {
+            message: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} stats`,
+            files: files,
+          }
+        ],
+    });
+})();
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
