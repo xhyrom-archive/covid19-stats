@@ -19,6 +19,15 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
     }
     PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
 
+    let hospitalizations = {
+        increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        patient: {
+            intensive: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-intensive -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+            ventilation: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-ventilation -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, ''))
+        }
+    }
+
     const AG = await (await hyttpo.request({
         url: 'https://data.korona.gov.sk/api/ag-tests/in-slovakia',
         method: 'GET',
@@ -34,6 +43,15 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
         .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
         .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count))
+    
+    let tableHos = new AsciiTable('Hospitalizations');
+
+    tableHos
+        .setHeading('TYPE', 'COUNT')
+        .addRow('Increase', hospitalizations.increase)
+        .addRow('Intensive', hospitalizations.patient.intensive)
+        .addRow('Ventilation', hospitalizations.patient.ventilation)
+        .addRow('Total', hospitalizations.total)
 
     let date = new Date();
 
@@ -43,18 +61,26 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count}`,
         `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
         ``,
-        table.toString()
+        `INCREASE=${hospitalizations.increase}`,
+        `INTENSIVE=${hospitalizations.patient.intensive}`,
+        `VENTILATION=${hospitalizations.patient.ventilation}`,
+        `TOTAL=${hospitalizations.total}`
+        ``,
+        table.toString(),
+        tableHos.toString()
     ].join('\n');
 
     files['latest.txt'] = { contents: content }
     files['latest.json'] = { contents: JSON.stringify({
         AG,
-        PCR
+        PCR,
+        hospitalizations
     }) }
     files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
     files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
         AG,
-        PCR
+        PCR,
+        hospitalizations
     }) }
 
     await octokit.rest.repos.createOrUpdateFiles({
