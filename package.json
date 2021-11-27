@@ -1,0 +1,28 @@
+{
+  "name": "covid-19-stats",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ascii-table": "^0.0.9",
+    "chart.js": "^3.6.0",
+    "fs": "^0.0.1-security",
+    "glob": "^7.2.0",
+    "hyttpo": "^0.2.6",
+    "next": "^12.0.4",
+    "octokit-commit-multiple-files": "^3.2.1",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^4.0.0",
+    "react-dom": "^17.0.2",
+    "react-google-charts": "^3.0.15",
+    "swr": "^1.0.1"
+  }
+}
