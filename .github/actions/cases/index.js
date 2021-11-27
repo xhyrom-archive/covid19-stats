@@ -4,8 +4,6 @@ const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
-
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
     const octokit = github.getOctokit(github_token);
@@ -82,6 +80,18 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         PCR,
         hospitalizations
     }) }
+
+    // Check
+    const latestOldContent = await octokit.rest.repos.getContent({
+        owner: "xHyroM",
+        repo: "covid19-stats",
+        path: `latest.json`,
+    })
+
+    if(latestOldContent.data.content === Buffer.from(content).toString('base64')) {
+        console.log('Any change.')
+        return;
+    }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",

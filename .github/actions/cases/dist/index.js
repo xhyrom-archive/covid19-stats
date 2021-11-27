@@ -7274,8 +7274,6 @@ const AsciiTable = __nccwpck_require__(8432);
 const core = __nccwpck_require__(8714);
 const github = __nccwpck_require__(9550);
 
-const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
-
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
     const octokit = github.getOctokit(github_token);
@@ -7352,6 +7350,18 @@ const formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,
         PCR,
         hospitalizations
     }) }
+
+    // Check
+    const latestOldContent = await octokit.rest.repos.getContent({
+        owner: "xHyroM",
+        repo: "covid19-stats",
+        path: `latest.json`,
+    })
+
+    if(latestOldContent.data.content === Buffer.from(content).toString('base64')) {
+        console.log('Any change.')
+        return;
+    }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
