@@ -1,8 +1,27 @@
 const hyttpo = require('hyttpo').default;
 const fs = require('fs');
+const glob = require('glob');
 const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
+
+const getAverage = () => {
+    const files = glob.sync('**/**/**/latest.json');
+    files.pop();
+    
+    let PCRcount = 0;
+    let AGcount = 0;
+    for(const file of files) {
+        const content = JSON.parse(fs.readFileSync(file).toString());
+        PCRcount += content.PCR.positives_count;
+        AGcount = content.AG.positives_count;
+    }
+    
+    return {
+        PCR: PCRcount / files.length,
+        AG: AGcount / files.length
+    }
+}
 
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
@@ -34,13 +53,15 @@ const github = require('@actions/github');
         }
     })).data.page[0]
 
+    const average = getAverage();
+
     let table = new AsciiTable('Cases');
 
     table
-        .setHeading('TYPE', '%', 'Positive', 'Negative')
-        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count)
-        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count)
-        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count))
+        .setHeading('TYPE', '%', 'Positive', 'Negative', 'Average')
+        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count, average.AG)
+        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count, average.PCR)
+        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count), (average.AG + average.PCR))
     
     let tableHos = new AsciiTable('Hospitalizations');
 
@@ -55,9 +76,9 @@ const github = require('@actions/github');
 
     let files = {};
     let content = [
-        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count}`,
-        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count}`,
-        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)}`,
+        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count},${average.AG}`,
+        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count},${average.PCR}`,
+        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)},${(average.AG + average.PCR)}`,
         ``,
         `INCREASE=${hospitalizations.increase}`,
         `INTENSIVE=${hospitalizations.patient.intensive}`,
