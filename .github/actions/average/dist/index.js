@@ -9676,7 +9676,7 @@ const getAverage = () => {
     const github_token = core.getInput('GITHUB_TOKEN', { required: true });
     const octokit = github.getOctokit(github_token);
     
-    const { owner, repo } = context.repo;
+    const { owner, repo } = github.context.repo;
 
     if (context.eventName !== "push") return;
 
