@@ -2,3 +2,5 @@ package-lock.json
 package.json
 node_modules/
 dev/
+.next/
+out/
