@@ -10725,6 +10725,9 @@ const getAverage = () => {
         tableHos.toString()
     ].join('\n');
 
+    AG.average = average.AG;
+    PCR.average = average.PCR;
+    
     files['latest.txt'] = { contents: content }
     files['latest.json'] = { contents: JSON.stringify({
         AG,

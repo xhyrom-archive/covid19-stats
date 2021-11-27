@@ -42,8 +42,8 @@ const getAverage = () => {
     const latest = JSON.parse(fs.readFileSync('latest.json').toString());
 
     const content = [
-        `(NEW CASES) PCR: ${latest.PCR.positives_count}, AG: ${latest.AG.positives_count}`
-        `(AVERAGE) PCR: ${average.PCR}, AG: ${average.AG}`,
+        `(NEW CASES) PCR: ${latest.PCR.positives_count}, AG: ${latest.AG.positives_count}`,
+        `(AVERAGE) PCR: ${average.PCR}, AG: ${average.AG}`
     ].join('\n');
 
     await octokit.rest.repos.createCommitComment({
