@@ -9678,9 +9678,9 @@ const getAverage = () => {
     
     const { owner, repo } = github.context.repo;
 
-    if (context.eventName !== "push") return;
+    if (github.context.eventName !== "push") return;
 
-    const payload = context.payload;
+    const payload = github.context.payload;
     const commitSha = payload.after;
 
     const commit = await octokit.rest.repos.getCommit({
