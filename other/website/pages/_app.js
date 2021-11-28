@@ -49,7 +49,7 @@ function MyApp({ Component, pageProps }) {
         
             <div className='container'>
                 {init()}
-                <div class="color-palette">
+                <div className="color-palette">
                     <label htmlFor="white"></label>
                     <label htmlFor="dark"></label>
                 </div>

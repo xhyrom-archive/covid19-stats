@@ -253,7 +253,7 @@ export default class Home extends Component {
                             <p>
                                 <font color='#ff6384'>AG: {this.cases?.AG.positivity_rate}</font><br />
                                 <font color='#35a2eb'>PCR: {this.cases?.PCR.positivity_rate}</font><br />
-                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG.positivity_rate_average + this.cases?.PCR.positivity_rate_average)}</font><br />
+                                <font color='#32a852'>Average: {this.cases?.AG.positivity_rate_average + this.cases?.PCR.positivity_rate_average}</font><br />
                                 <font color='#fcba03'>Total: {this.cases?.AG.positivity_rate + parseFloat(this.cases?.PCR?.positivity_rate)}</font>
                             </p>
                         </div>
