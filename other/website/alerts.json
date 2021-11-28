@@ -2,7 +2,7 @@
     "messages": [
         {
             "text": "Mimoriadna správa: Výzva pre občanov, ktorí za posledných 14 dní navštívili Južnú Afriku, Botswanu, Namíbiu, Lesotho, Eswatini, Mozambik, Zimbabwe, Izrael, Hongkong a Seychely, aby sa urýchlene nahlásili na emailovú adresu omikron@uvzsr.sk",
-            "type": "warn"
+            "type": "error"
         }
     ]
 }

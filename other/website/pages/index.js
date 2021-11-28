@@ -217,22 +217,23 @@ export default class Home extends Component {
     alert = async() => {
         if(!process.browser);
 
-        let alerts = await fetch('https://raw.githubusercontent.com/xHyroM/covid19-stats/master/other/website/alerts.json' ?? 'https://xhyrom.github.io/covid19-stats/other/website/alerts.json');
+        let alerts = await fetch('https://xhyrom.github.io/covid19-stats/other/website/alerts.json');
         if(!alerts.ok) alerts = JSON.parse(localStorage.getItem('alerts'));
         else {
             alerts = await alerts.json();
             localStorage.setItem('alerts', JSON.stringify(alerts));
         }
 
-        for(const alert of alerts) {
+        for(const alert of alerts.messages) {
             toast[alert.type](alert.text, {
                 position: "top-right",
-                autoClose: false,
+                autoClose: 50000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "dark"
             })
         }
     }
@@ -253,16 +254,7 @@ export default class Home extends Component {
                         </Link> Slovakia Statistics
                     </h1>
 
-                    <ToastContainer
-                            position="top-right"
-                            autoClose={false}
-                            hideProgressBar={false}
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                    />
+                    <ToastContainer/>
 
                     <div className="grid">
                         <div className="card">
