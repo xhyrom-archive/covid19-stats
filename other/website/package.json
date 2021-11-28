@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cd other/website && next dev",
-    "build": "cd other/website && next build && next export",
-    "start": "cd other/website && next start"
+    "dev": "next dev",
+    "build": "next build && next export",
+    "start": "next start"
   },
   "keywords": [],
   "author": "",
