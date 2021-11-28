@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import Script from 'next/script';
 import { Component } from 'react';
 import { Chart } from 'react-google-charts'
 
@@ -40,11 +41,11 @@ export default class Home extends Component {
         this.cases = cases;
         this.files = files;
 
-        if(!this.cases?.message?.includes('rate limit') && process.browser) localStorage.setItem('cases', JSON.stringify(cases))
-        else if(process.browser) cases = JSON.parse(localStorage.getItem('cases'));
+        if(!this.cases?.message?.includes('rate limit') && process.browser) localStorage.setItem('cases', JSON.stringify(this.cases))
+        else if(process.browser) this.cases = JSON.parse(localStorage.getItem('cases'));
     
-        if(!this.files?.message?.includes('rate limit') && process.browser) localStorage.setItem('files', JSON.stringify(files))
-        else if(process.browser) files = JSON.parse(localStorage.getItem('files'));
+        if(!this.files?.message?.includes('rate limit') && process.browser) localStorage.setItem('files', JSON.stringify(this.files))
+        else if(process.browser) this.files = JSON.parse(localStorage.getItem('files'));
 
         if(process.browser) {
             loadAgain();
@@ -56,7 +57,6 @@ export default class Home extends Component {
                 this.renderPositivityRate();
                 this.renderCasesNegative();
             }
-
         }
     }
 
@@ -202,11 +202,11 @@ export default class Home extends Component {
 
     render() {
         return (
-            <div className='container'>
+            <div>
                 <Head>
                     <title>Covid-19 Stats Slovakia</title>
                 </Head>
-    
+
                 <main>
                     <h1 className='title'>
                         <Link href="https://www.who.int/health-topics/coronavirus">
@@ -278,6 +278,7 @@ export default class Home extends Component {
                     </footer>
                 </main>
 
+                <Script src='https://kit.fontawesome.com/5acf4d9e80.js' crossOrigin='anonymous'></Script>
                 <style jsx>{`
                 .row {
                     margin:0 !important;
@@ -413,21 +414,6 @@ export default class Home extends Component {
                         width: 100%;
                         flex-direction: column;
                     }
-                    }
-                `}</style>
-    
-                <style jsx global>{`
-                    html,
-                    body {
-                    padding: 0;
-                    margin: 0;
-                    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-                        Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-                        sans-serif;
-                    }
-    
-                    * {
-                    box-sizing: border-box;
                     }
                 `}</style>
             </div>
