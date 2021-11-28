@@ -108,7 +108,7 @@ const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, Hospit
         `INCREASE=${hospitalizations.increase}`,
         `INTENSIVE=${hospitalizations.patient.intensive}`,
         `VENTILATION=${hospitalizations.patient.ventilation}`,
-        `AVERAGE=${average.Hospitalizations}`
+        `AVERAGE=${average.Hospitalizations}`,
         `TOTAL=${hospitalizations.total}`,
         ``,
         table.toString(),

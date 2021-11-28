@@ -76,7 +76,7 @@ const getAverage = () => {
         `PCR: ${latest.PCR.negatives_count}, AG: ${latest.AG.negatives_count}`,
         `(Average) PCR: ${average.PCRNegative}, AG: ${average.AGNegative}`,
         ``,
-        `**HOSPITALIZATIONS`,
+        `**HOSPITALIZATIONS**`,
         `Increase: ${latest.hospitalizations.increase}`,
         `Intensive: ${latest.hospitalizations.patient.intensive}`,
         `Ventilation: ${latest.hospitalizations.patient.ventilation}`,
