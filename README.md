@@ -1,3 +1,5 @@
+UI: [covid19.hyrousek.tk](https://covid19.hyrousek.tk)  
+API: [xhyrom.github.io/covid19-stats](https://xhyrom.github.io/covid19-stats)  
 API Endpoints:
  - /latest.txt
  - /latest.json
