@@ -51,6 +51,8 @@ export default class Home extends Component {
 
         if(process.browser) {
             loadAgain();
+            this.alert();
+
             window.onresize = loadAgain()
 
             function loadAgain() {
@@ -212,16 +214,27 @@ export default class Home extends Component {
         return finalData;
     }
 
-    alert() {
-        toast.warn('🦄 Wow so easy!', {
-            position: "top-right",
-            autoClose: false,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        })
+    alert = async() => {
+        if(!process.browser);
+
+        let alerts = await fetch('https://raw.githubusercontent.com/xHyroM/covid19-stats/master/other/website/alerts.json' ?? 'https://xhyrom.github.io/covid19-stats/other/website/alerts.json');
+        if(!alerts.ok) alerts = JSON.parse(localStorage.getItem('alerts'));
+        else {
+            alerts = await alerts.json();
+            localStorage.setItem('alerts', JSON.stringify(alerts));
+        }
+
+        for(const alert of alerts) {
+            toast[alert.type](alert.text, {
+                position: "top-right",
+                autoClose: false,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+        }
     }
 
     formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
@@ -239,10 +252,6 @@ export default class Home extends Component {
                             <a>Covid 19</a>
                         </Link> Slovakia Statistics
                     </h1>
-
-                    <div className='noshow'>
-                        {this.alert()}
-                    </div>
 
                     <ToastContainer
                             position="top-right"
@@ -324,8 +333,6 @@ export default class Home extends Component {
 
                 <Script src='https://kit.fontawesome.com/5acf4d9e80.js' crossOrigin='anonymous'></Script>
                 <style jsx>{`
-                .noshow { display: none; }
-
                 .row {
                     margin:0 !important;
                   }
