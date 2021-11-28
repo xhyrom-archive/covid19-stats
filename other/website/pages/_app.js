@@ -44,6 +44,7 @@ function MyApp({ Component, pageProps }) {
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             </Head>
+
             <input type="radio" id="white" name="colors" value="white" onChange={() => darklight()} />
             <input type="radio" id="dark" name="colors" value="dark" onChange={() => darklight()} />
         
@@ -92,15 +93,16 @@ function MyApp({ Component, pageProps }) {
                         cursor: pointer;
                       }
 
-                    [id="white"] ~ .container [htmlFor="white"] {
+                    [id="white"] ~ .container [for="white"] {
                         background: var(--white-bg-color);
                     }
                     
-                    [id="dark"] ~ .container [htmlFor="dark"] {
+                    [id="dark"] ~ .container [for="dark"] {
                         background: var(--dark-bg-color);
                     }
 
                     .color-palette {
+                        z-index: 1;
                         position: fixed;
                         top: 30px;
                         right: 15px;
