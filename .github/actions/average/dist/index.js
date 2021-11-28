@@ -9679,9 +9679,11 @@ const getAverage = () => {
 
         HospitalizationsCount += content.hospitalizations.total;
 
+        console.log(content.PCR.positivity_rate)
         PCRPositivityrateCount += content.PCR.positivity_rate;
         AGPositivityrateCount += content.AG.positivity_rate;
     }
+    console.log(PCRPositivityrateCount, PCRPositivityrateCount / files.length)
     
     return {
         PCR: PCRcount / files.length,
