@@ -225,7 +225,7 @@ export default class Home extends Component {
         }
 
         for(const alert of alerts.messages) {
-            toast[alert.type](alert.text, {
+            toast[alert.type](<div dangerouslySetInnerHTML={{__html: alert.text}}></div>, {
                 position: "top-right",
                 autoClose: 50000,
                 hideProgressBar: false,
@@ -325,6 +325,7 @@ export default class Home extends Component {
 
                 <Script src='https://kit.fontawesome.com/5acf4d9e80.js' crossOrigin='anonymous'></Script>
                 <style jsx>{`
+                .Toastify__toast-body { white-space: pre-line; }
                 .row {
                     margin:0 !important;
                   }
