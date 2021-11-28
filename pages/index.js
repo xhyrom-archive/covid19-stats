@@ -1,30 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { Component } from 'react';
+import { Chart } from 'react-google-charts'
+
 import { createElement } from 'react';
-
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import ReactDOM from 'react-dom';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
   
 export async function getStaticProps() {
     const getCases = async(url) => {
@@ -67,35 +47,29 @@ export default class Home extends Component {
         else if(process.browser) files = JSON.parse(localStorage.getItem('files'));
 
         if(process.browser) {
-            this.renderCases();
-            this.renderHospitalizations();
+            loadAgain();
+            window.onresize = loadAgain()
+
+            function loadAgain() {
+                this.renderCases();
+                this.renderHospitalizations();
+                this.renderPositivityRate();
+                this.renderCasesNegative();
+            }
+
         }
     }
 
     renderCases = async() => {
-        const finalData = {
-            labels: [],
-            datasets: [
-                {
-                    label: 'AG',
-                    data: [],
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-                {
-                    label: 'PCR',
-                    data: [],
-                    borderColor: 'rgb(53, 162, 235)',
-                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                },
-                {
-                    label: 'Total',
-                    data: [],
-                    borderColor: 'rgb(252, 186, 3)',
-                    backgroundColor: 'rgba(252, 186, 3, 0.5)',
-                },
-            ],
-        };
+        const finalData = [
+            [
+                'Date',
+                'AG',
+                'PCR',
+                'Average',
+                'Total'
+            ]
+        ]
 
         for(let file of this.files) {
             const data = await (await fetch(`https://xhyrom.github.io/covid19-stats/${file.path}`)).json();
@@ -104,25 +78,17 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.labels.push(path.join('/'))
-            finalData.datasets[0].data.push(data.AG.positives_count)
-            finalData.datasets[1].data.push(data.PCR.positives_count)
-            finalData.datasets[2].data.push(data.AG.positives_count + data.PCR.positives_count)
+            finalData.push([path.join('/'), data.AG.positives_count, data.PCR.positives_count, (data.AG.average + data.PCR.average), (data.AG.positives_count + data.PCR.positives_count)])
         }
 
-        let element = createElement(Line, {
+        let element = createElement(Chart, {
             data: finalData,
-            width: 500,
-            height: 300,
             options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Cases',
-                    }
-                }
-            }
+                title: 'Cases',
+                colors: ['#ff6384', '#35a2eb', '#32a852', '#fcba03']
+            },
+            chartType: "LineChart",
+            loader: 'Loading Cases',
         })
         ReactDOM.render(element, document.getElementById('stats'))
 
@@ -130,35 +96,15 @@ export default class Home extends Component {
     }
 
     renderHospitalizations = async() => {
-        const finalData = {
-            labels: [],
-            datasets: [
-                {
-                    label: 'Increase',
-                    data: [],
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-                {
-                    label: 'Intensive',
-                    data: [],
-                    borderColor: 'rgb(53, 162, 235)',
-                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                },
-                {
-                    label: 'Ventilation',
-                    data: [],
-                    borderColor: 'rgb(50, 168, 82)',
-                    backgroundColor: 'rgba(50, 168, 82, 0.5)',
-                },
-                {
-                    label: 'Total',
-                    data: [],
-                    borderColor: 'rgb(252, 186, 3)',
-                    backgroundColor: 'rgba(252, 186, 3, 0.5)',
-                },
-            ],
-        };
+        const finalData = [
+            [
+                'Date',
+                'Increase',
+                'Intensive',
+                'Ventilation',
+                'Total'
+            ]
+        ]
 
         for(let file of this.files) {
             const data = await (await fetch(`https://xhyrom.github.io/covid19-stats/${file.path}`)).json();
@@ -167,28 +113,87 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.labels.push(path.join('/'))
-            finalData.datasets[0].data.push(data.hospitalizations.increase)
-            finalData.datasets[1].data.push(data.hospitalizations.patient.intensive)
-            finalData.datasets[2].data.push(data.hospitalizations.patient.ventilation)
-            finalData.datasets[3].data.push(data.hospitalizations.total)
+            finalData.push([path.join('/'), data.hospitalizations.increase, data.hospitalizations.patient.intensive, data.hospitalizations.patient.ventilation, data.hospitalizations.total])
         }
 
-        let element = createElement(Line, {
+        let element = createElement(Chart, {
             data: finalData,
-            width: 500,
-            height: 300,
             options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Hospitalizations',
-                    }
-                }
-            }
+                title: 'Hospitalizations',
+                colors: ['#ff6384', '#35a2eb', '#32a852', '#fcba03']
+            },
+            chartType: "LineChart",
+            loader: 'Loading Hospitalizations'
         })
         ReactDOM.render(element, document.getElementById('stats-hospitalizations'))
+
+        return finalData;
+    }
+
+    renderPositivityRate = async() => {
+        const finalData = [
+            [
+                'Date',
+                'AG',
+                'PCR',
+                'Total'
+            ]
+        ]
+
+        for(let file of this.files) {
+            const data = await (await fetch(`https://xhyrom.github.io/covid19-stats/${file.path}`)).json();
+            const path = file.path.split('/');
+            path.pop();
+
+            if(path.length === 0) continue;
+
+            finalData.push([path.join('/'), data.AG.positivity_rate, parseFloat(data.PCR.positivity_rate), (data.AG.positivity_rate + parseFloat(data.PCR.positivity_rate))])
+        }
+
+        let element = createElement(Chart, {
+            data: finalData,
+            options: {
+                title: 'Positivity Rate',
+                colors: ['#ff6384', '#35a2eb', '#fcba03']
+            },
+            chartType: "LineChart",
+            loader: 'Loading Positivity Rate'
+        })
+        ReactDOM.render(element, document.getElementById('stats-positivity-rate'))
+
+        return finalData;
+    }
+
+    renderCasesNegative = async() => {
+        const finalData = [
+            [
+                'Date',
+                'AG',
+                'PCR',
+                'Total'
+            ]
+        ]
+
+        for(let file of this.files) {
+            const data = await (await fetch(`https://xhyrom.github.io/covid19-stats/${file.path}`)).json();
+            const path = file.path.split('/');
+            path.pop();
+
+            if(path.length === 0) continue;
+
+            finalData.push([path.join('/'), data.AG.negatives_count, data.PCR.negatives_count, (data.AG.negatives_count + data.PCR.negatives_count)])
+        }
+
+        let element = createElement(Chart, {
+            data: finalData,
+            options: {
+                title: 'Negative Cases',
+                colors: ['#ff6384', '#35a2eb', '#fcba03']
+            },
+            chartType: "LineChart",
+            loader: 'Loading Negative Cases'
+        })
+        ReactDOM.render(element, document.getElementById('stats-cases-negative'))
 
         return finalData;
     }
@@ -210,46 +215,59 @@ export default class Home extends Component {
                     </h1>
     
                     <div className="grid">
-                        <a className="card">
+                        <div className="card">
                             <h3>New Cases</h3>
                             <p>
-                                AG: {this.formatNumber(this.cases?.AG?.positives_count)}<br />
-                                PCR: {this.formatNumber(this.cases?.PCR?.positives_count)}<br />
-                                Average: {this.formatNumber(this.cases?.AG?.average + this.cases?.PCR?.average)}<br />
-                                Total: {this.formatNumber(this.cases?.AG?.positives_count + this.cases?.PCR?.positives_count)}
+                                <font color='#ff6384'>AG: {this.formatNumber(this.cases?.AG?.positives_count)}</font><br />
+                                <font color='#35a2eb'>PCR: {this.formatNumber(this.cases?.PCR?.positives_count)}</font><br />
+                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG?.average + this.cases?.PCR?.average)}</font><br />
+                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.AG?.positives_count + this.cases?.PCR?.positives_count)}</font>
                             </p>
-                        </a>
+                        </div>
     
-                        <a className="card">
+                        <div className="card">
                             <h3>Hospitalizations</h3>
                             <p>
-                                Increase: {this.formatNumber(this.cases?.hospitalizations?.increase)}<br />
-                                Intensive: {this.formatNumber(this.cases?.hospitalizations?.patient?.intensive)}<br />
-                                Ventilation: {this.formatNumber(this.cases?.hospitalizations?.patient?.ventilation)}<br />
-                                Total: {this.formatNumber(this.cases?.hospitalizations?.total)}
+                                <font color='#ff6384'>Increase: {this.formatNumber(this.cases?.hospitalizations?.increase)}</font><br />
+                                <font color='#35a2eb'>Intensive: {this.formatNumber(this.cases?.hospitalizations?.patient?.intensive)}</font><br />
+                                <font color='#32a852'>Ventilation: {this.formatNumber(this.cases?.hospitalizations?.patient?.ventilation)}</font><br />
+                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.hospitalizations?.total)}</font>
                             </p>
-                        </a>
+                        </div>
     
-                        <a className="card">
+                        <div className="card">
                             <h3>Positivity Rate</h3>
                             <p>
-                                AG: {this.cases?.AG.positivity_rate}<br />
-                                PCR: {this.cases?.PCR.positivity_rate}<br />
-                                Total: {this.cases?.AG.positivity_rate + this.cases?.PCR?.positivity_rate}
+                                <font color='#ff6384'>AG: {this.cases?.AG.positivity_rate}</font><br />
+                                <font color='#35a2eb'>PCR: {this.cases?.PCR.positivity_rate}</font><br />
+                                <font color='#fcba03'>Total: {this.cases?.AG.positivity_rate + parseFloat(this.cases?.PCR?.positivity_rate)}</font>
                             </p>
-                        </a>
+                        </div>
     
-                        <a className="card">
+                        <div className="card">
                             <h3>Negative Cases</h3>
                             <p>
-                                AG: {this.cases?.AG.negatives_count}<br />
-                                PCR: {this.cases?.PCR.negatives_count}<br />
-                                Total: {this.cases?.AG?.negatives_count + this.cases?.PCR?.negatives_count}
+                                <font color='#ff6384'>AG: {this.formatNumber(this.cases?.AG.negatives_count)}</font><br />
+                                <font color='#35a2eb'>PCR: {this.formatNumber(this.cases?.PCR.negatives_count)}</font><br />
+                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.AG?.negatives_count + this.cases?.PCR?.negatives_count)}</font>
                             </p>
-                        </a>
+                        </div>
 
-                        <div id='stats'></div>
-                        <div id='stats-hospitalizations'></div>
+                        <div className="card">
+                            <div id="stats"></div>
+                        </div>
+
+                        <div className="card">
+                            <div id="stats-hospitalizations"></div>
+                        </div>
+
+                        <div className="card">
+                            <div id="stats-positivity-rate"></div>
+                        </div>
+
+                        <div className="card">
+                            <div id="stats-cases-negative"></div>
+                        </div>
                     </div>
 
                     <footer>
@@ -259,8 +277,12 @@ export default class Home extends Component {
                         Updated at {this.cases?.AG?.updated_at}
                     </footer>
                 </main>
-    
+
                 <style jsx>{`
+                .row {
+                    margin:0 !important;
+                  }
+
                     .container {
                     min-height: 100vh;
                     padding: 0 0.5rem;
@@ -348,7 +370,7 @@ export default class Home extends Component {
                     justify-content: center;
                     flex-wrap: wrap;
     
-                    max-width: 800px;
+                    max-width: 1000px;
                     margin-top: 3rem;
                     }
     
