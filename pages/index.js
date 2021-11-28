@@ -272,7 +272,7 @@ export default class Home extends Component {
 
                     <footer>
                         <br />
-                        Powered by <Link href='https://korona.gov.sk'><a>korona.gov.sk</a></Link><br />
+                        Powered by <Link href='https://github.com/Institut-Zdravotnych-Analyz/covid19-data'><a>Institut-Zdravotnych-Analyz</a></Link><br />
                         Raw source <Link href='https://github.com/xHyroM/covid19-stats'><a>GitHub</a></Link><br />
                         Updated at {this.cases?.AG?.updated_at}
                     </footer>
