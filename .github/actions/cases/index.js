@@ -34,7 +34,7 @@ const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, Hospit
 
         HospitalizationsCount += content.hospitalizations.total;
 
-        PCRPositivityrateCount += content.PCR.positivity_rate;
+        PCRPositivityrateCount += parseFloat(content.PCR.positivity_rate);
         AGPositivityrateCount += content.AG.positivity_rate;
     }
     
