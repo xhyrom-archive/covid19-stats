@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Script from 'next/script';
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import { Chart } from 'react-google-charts'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { createElement } from 'react';
 import ReactDOM from 'react-dom';
@@ -210,6 +212,18 @@ export default class Home extends Component {
         return finalData;
     }
 
+    alert() {
+        toast.warn('🦄 Wow so easy!', {
+            position: "top-right",
+            autoClose: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+    }
+
     formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
 
     render() {
@@ -225,7 +239,22 @@ export default class Home extends Component {
                             <a>Covid 19</a>
                         </Link> Slovakia Statistics
                     </h1>
-    
+
+                    <div className='noshow'>
+                        {this.alert()}
+                    </div>
+
+                    <ToastContainer
+                            position="top-right"
+                            autoClose={false}
+                            hideProgressBar={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                    />
+
                     <div className="grid">
                         <div className="card">
                             <h3>New Cases</h3>
@@ -295,6 +324,8 @@ export default class Home extends Component {
 
                 <Script src='https://kit.fontawesome.com/5acf4d9e80.js' crossOrigin='anonymous'></Script>
                 <style jsx>{`
+                .noshow { display: none; }
+
                 .row {
                     margin:0 !important;
                   }
