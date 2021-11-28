@@ -9,15 +9,37 @@ const getAverage = () => {
     
     let PCRcount = 0;
     let AGcount = 0;
+
+    let PCRNegativeCount = 0;
+    let AGNegativeCount = 0;
+
+    let HospitalizationsCount = 0;
+
+    let PCRPositivityrateCount = 0;
+    let AGPositivityrateCount = 0;
+
     for(const file of files) {
         const content = JSON.parse(fs.readFileSync(file).toString());
         PCRcount += content.PCR.positives_count;
-        AGcount = content.AG.positives_count;
+        AGcount += content.AG.positives_count;
+
+        PCRNegativeCount += content.PCR.negatives_count;
+        AGNegativeCount += content.AG.negatives_count;
+
+        HospitalizationsCount += content.hospitalizations.total;
+
+        PCRPositivityrateCount += content.PCR.positivity_rate;
+        AGPositivityrateCount += content.AG.positivity_rate;
     }
     
     return {
         PCR: PCRcount / files.length,
-        AG: AGcount / files.length
+        AG: AGcount / files.length,
+        PCRNegative: PCRNegativeCount / files.length,
+        AGNegative: AGNegativeCount / files.length,
+        Hospitalizations: HospitalizationsCount / files.length,
+        PCRPositivityrate: PCRPositivityrateCount / files.length,
+        AGPositivityrate: AGPositivityrateCount / files.length,
     }
 }
 
@@ -42,8 +64,24 @@ const getAverage = () => {
     const latest = JSON.parse(fs.readFileSync('latest.json').toString());
 
     const content = [
-        `(NEW CASES) PCR: ${latest.PCR.positives_count}, AG: ${latest.AG.positives_count}`,
-        `(AVERAGE) PCR: ${average.PCR}, AG: ${average.AG}`
+        `**POSITIVITY RATE**`,
+        `PCR: ${latest.PCR.positivity_rate}, AG: ${latest.AG.positivity_rate}`,
+        `(Average) PCR: ${average.PCRPositivityrate}, AG: ${average.AGPositivityrate}`,
+        ``,
+        `**NEW CASES**`,
+        `PCR: ${latest.PCR.positives_count}, AG: ${latest.AG.positives_count}`,
+        `(Average) PCR: ${average.PCR}, AG: ${average.AG}`,
+        ``,
+        `**NEGATIVE CASES**`,
+        `PCR: ${latest.PCR.negatives_count}, AG: ${latest.AG.negatives_count}`,
+        `(Average) PCR: ${average.PCRNegative}, AG: ${average.AGNegative}`,
+        ``,
+        `**HOSPITALIZATIONS`,
+        `Increase: ${latest.hospitalizations.increase}`,
+        `Intensive: ${latest.hospitalizations.patient.intensive}`,
+        `Ventilation: ${latest.hospitalizations.patient.ventilation}`,
+        `Average: ${average.Hospitalizations}`,
+        `Total: ${latest.hospitalizations.total}`
     ].join('\n');
 
     await octokit.rest.repos.createCommitComment({

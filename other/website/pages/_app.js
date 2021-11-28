@@ -50,8 +50,8 @@ function MyApp({ Component, pageProps }) {
             <div className='container'>
                 {init()}
                 <div class="color-palette">
-                    <label for="white"></label>
-                    <label for="dark"></label>
+                    <label htmlFor="white"></label>
+                    <label htmlFor="dark"></label>
                 </div>
 
                 <Component {...pageProps} />
@@ -92,11 +92,11 @@ function MyApp({ Component, pageProps }) {
                         cursor: pointer;
                       }
 
-                    [id="white"] ~ .container [for="white"] {
+                    [id="white"] ~ .container [htmlFor="white"] {
                         background: var(--white-bg-color);
                     }
                     
-                    [id="dark"] ~ .container [for="dark"] {
+                    [id="dark"] ~ .container [htmlFor="dark"] {
                         background: var(--dark-bg-color);
                     }
 
@@ -138,7 +138,7 @@ function MyApp({ Component, pageProps }) {
                         background: var(--white-bg-color);
                     }
                     
-                    [id="white"]:checked ~ .container [for="white"]::before {
+                    [id="white"]:checked ~ .container [htmlFor="white"]::before {
                         background: var(--white-text-color);
                     }
                     
@@ -147,7 +147,7 @@ function MyApp({ Component, pageProps }) {
                         background: var(--dark-bg-color);
                     }
                     
-                    [id="dark"]:checked ~ .container [for="dark"]::before {
+                    [id="dark"]:checked ~ .container [htmlFor="dark"]::before {
                         background: var(--dark-text-color);
                     }
                     `

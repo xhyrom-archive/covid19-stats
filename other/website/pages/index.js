@@ -66,8 +66,8 @@ export default class Home extends Component {
                 'Date',
                 'AG',
                 'PCR',
-                'Average',
-                'Total'
+                'Total',
+                'Average'
             ]
         ]
 
@@ -78,16 +78,18 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.push([path.join('/'), data.AG.positives_count, data.PCR.positives_count, (data.AG.average + data.PCR.average), (data.AG.positives_count + data.PCR.positives_count)])
+            finalData.push([path.join('/'), data.AG.positives_count, data.PCR.positives_count, (data.AG.positives_count + data.PCR.positives_count), (data.AG.average + data.PCR.average)])
         }
 
         let element = createElement(Chart, {
             data: finalData,
             options: {
                 title: 'Cases',
-                colors: ['#ff6384', '#35a2eb', '#32a852', '#fcba03']
+                colors: ['#ff6384', '#35a2eb', '#fcba03', '#32a852'],
+                seriesType: 'bars',
+                series: { 3: { type: 'line' } }
             },
-            chartType: "LineChart",
+            chartType: "ComboChart",
             loader: 'Loading Cases',
         })
         ReactDOM.render(element, document.getElementById('stats'))
@@ -102,7 +104,8 @@ export default class Home extends Component {
                 'Increase',
                 'Intensive',
                 'Ventilation',
-                'Total'
+                'Total',
+                'Average'
             ]
         ]
 
@@ -113,16 +116,18 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.push([path.join('/'), data.hospitalizations.increase, data.hospitalizations.patient.intensive, data.hospitalizations.patient.ventilation, data.hospitalizations.total])
+            finalData.push([path.join('/'), data.hospitalizations.increase, data.hospitalizations.patient.intensive, data.hospitalizations.patient.ventilation, data.hospitalizations.total, data.hospitalizations.average ?? 0])
         }
 
         let element = createElement(Chart, {
             data: finalData,
             options: {
                 title: 'Hospitalizations',
-                colors: ['#ff6384', '#35a2eb', '#32a852', '#fcba03']
+                colors: ['#ff6384', '#35a2eb', '#eb8634', '#fcba03', '#32a852'],
+                seriesType: 'bars',
+                series: { 4: { type: 'line' } }
             },
-            chartType: "LineChart",
+            chartType: "ComboChart",
             loader: 'Loading Hospitalizations'
         })
         ReactDOM.render(element, document.getElementById('stats-hospitalizations'))
@@ -136,7 +141,8 @@ export default class Home extends Component {
                 'Date',
                 'AG',
                 'PCR',
-                'Total'
+                'Total',
+                'Average'
             ]
         ]
 
@@ -147,16 +153,18 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.push([path.join('/'), data.AG.positivity_rate, parseFloat(data.PCR.positivity_rate), (data.AG.positivity_rate + parseFloat(data.PCR.positivity_rate))])
+            finalData.push([path.join('/'), data.AG.positivity_rate, parseFloat(data.PCR.positivity_rate), (data.AG.positivity_rate + parseFloat(data.PCR.positivity_rate)), (data.AG.positivity_rate_average + data.PCR.positivity_rate_average)])
         }
 
         let element = createElement(Chart, {
             data: finalData,
             options: {
                 title: 'Positivity Rate',
-                colors: ['#ff6384', '#35a2eb', '#fcba03']
+                colors: ['#ff6384', '#35a2eb', '#fcba03', '#32a852'],
+                seriesType: 'bars',
+                series: { 3: { type: 'line' } }
             },
-            chartType: "LineChart",
+            chartType: "ComboChart",
             loader: 'Loading Positivity Rate'
         })
         ReactDOM.render(element, document.getElementById('stats-positivity-rate'))
@@ -170,7 +178,8 @@ export default class Home extends Component {
                 'Date',
                 'AG',
                 'PCR',
-                'Total'
+                'Total',
+                'Average'
             ]
         ]
 
@@ -181,16 +190,19 @@ export default class Home extends Component {
 
             if(path.length === 0) continue;
 
-            finalData.push([path.join('/'), data.AG.negatives_count, data.PCR.negatives_count, (data.AG.negatives_count + data.PCR.negatives_count)])
+            finalData.push([path.join('/'), data.AG.negatives_count, data.PCR.negatives_count, (data.AG.negatives_count + data.PCR.negatives_count), (data.AG.negatives_average + data.PCR.negatives_average)])
         }
+        
 
         let element = createElement(Chart, {
             data: finalData,
             options: {
                 title: 'Negative Cases',
-                colors: ['#ff6384', '#35a2eb', '#fcba03']
+                colors: ['#ff6384', '#35a2eb', '#fcba03', '#32a852'],
+                seriesType: 'bars',
+                series: { 3: { type: 'line' } }
             },
-            chartType: "LineChart",
+            chartType: "ComboChart",
             loader: 'Loading Negative Cases'
         })
         ReactDOM.render(element, document.getElementById('stats-cases-negative'))
@@ -230,7 +242,8 @@ export default class Home extends Component {
                             <p>
                                 <font color='#ff6384'>Increase: {this.formatNumber(this.cases?.hospitalizations?.increase)}</font><br />
                                 <font color='#35a2eb'>Intensive: {this.formatNumber(this.cases?.hospitalizations?.patient?.intensive)}</font><br />
-                                <font color='#32a852'>Ventilation: {this.formatNumber(this.cases?.hospitalizations?.patient?.ventilation)}</font><br />
+                                <font color='#eb8634'>Ventilation: {this.formatNumber(this.cases?.hospitalizations?.patient?.ventilation)}</font><br />
+                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.hospitalizations?.average ?? 0)}</font><br />
                                 <font color='#fcba03'>Total: {this.formatNumber(this.cases?.hospitalizations?.total)}</font>
                             </p>
                         </div>
@@ -240,6 +253,7 @@ export default class Home extends Component {
                             <p>
                                 <font color='#ff6384'>AG: {this.cases?.AG.positivity_rate}</font><br />
                                 <font color='#35a2eb'>PCR: {this.cases?.PCR.positivity_rate}</font><br />
+                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG.positivity_rate_average + this.cases?.PCR.positivity_rate_average)}</font><br />
                                 <font color='#fcba03'>Total: {this.cases?.AG.positivity_rate + parseFloat(this.cases?.PCR?.positivity_rate)}</font>
                             </p>
                         </div>
@@ -249,6 +263,7 @@ export default class Home extends Component {
                             <p>
                                 <font color='#ff6384'>AG: {this.formatNumber(this.cases?.AG.negatives_count)}</font><br />
                                 <font color='#35a2eb'>PCR: {this.formatNumber(this.cases?.PCR.negatives_count)}</font><br />
+                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG.negatives_average + this.cases?.PCR.negatives_average)}</font><br />
                                 <font color='#fcba03'>Total: {this.formatNumber(this.cases?.AG?.negatives_count + this.cases?.PCR?.negatives_count)}</font>
                             </p>
                         </div>

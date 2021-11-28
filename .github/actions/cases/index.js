@@ -7,23 +7,45 @@ const github = require('@actions/github');
 
 const date = new Date();
 
-const getAverage = (AGtoday, PCRtoday) => {
+const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, HospitalizationsToday, AGPositvityToday, PCRPositvityToday) => {
     const files = glob.sync('**/**/**/latest.json');
     files.pop();
     
     let PCRcount = PCRtoday;
     let AGcount = AGtoday;
+
+    let PCRNegativeCount = PCRTodayNegative;
+    let AGNegativeCount = AGTodayNegative;
+
+    let HospitalizationsCount = HospitalizationsToday;
+
+    let PCRPositivityrateCount = PCRPositvityToday;
+    let AGPositivityrateCount = AGPositvityToday;
+
     for(const file of files) {
         if(file.includes(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`)) continue;
 
         const content = JSON.parse(fs.readFileSync(file).toString());
         PCRcount += content.PCR.positives_count;
         AGcount = content.AG.positives_count;
+
+        PCRNegativeCount += content.PCR.negatives_count;
+        AGNegativeCount += content.AG.negatives_count;
+
+        HospitalizationsCount += content.hospitalizations.total;
+
+        PCRPositivityrateCount += content.PCR.positivity_rate;
+        AGPositivityrateCount += content.AG.positivity_rate;
     }
     
     return {
         PCR: PCRcount / files.length,
-        AG: AGcount / files.length
+        AG: AGcount / files.length,
+        PCRNegative: PCRNegativeCount / files.length,
+        AGNegative: AGNegativeCount / files.length,
+        Hospitalizations: HospitalizationsCount / files.length,
+        PCRPositivityrate: PCRPositivityrateCount / files.length,
+        AGPositivityrate: AGPositivityrateCount / files.length
     }
 }
 
@@ -57,15 +79,15 @@ const getAverage = (AGtoday, PCRtoday) => {
         }
     })).data.page[0]
 
-    const average = getAverage(AG.positives_count, PCR.positives_count);
+    const average = getAverage(AG.positives_count, PCR.positives_count, AG.negatives_count, PCR.negatives_count, hospitalizations.total, AG.positivity_rate, PCR.positivity_rate);
 
     let table = new AsciiTable('Cases');
 
     table
-        .setHeading('TYPE', '%', 'Positive', 'Negative', 'Average')
-        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count, average.AG)
-        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count, average.PCR)
-        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count), (average.AG + average.PCR))
+        .setHeading('TYPE', '%', 'Positive', 'Negative', 'Average', 'Negative Average')
+        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count, average.AG, average.AGNegative)
+        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count, average.PCR, average.PCRNegative)
+        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count), (average.AG + average.PCR), (average.AGNegative + average.PCRNegative))
     
     let tableHos = new AsciiTable('Hospitalizations');
 
@@ -74,17 +96,19 @@ const getAverage = (AGtoday, PCRtoday) => {
         .addRow('Increase', hospitalizations.increase)
         .addRow('Intensive', hospitalizations.patient.intensive)
         .addRow('Ventilation', hospitalizations.patient.ventilation)
+        .addRow('Average', average.Hospitalizations)
         .addRow('Total', hospitalizations.total)
 
     let files = {};
     let content = [
-        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count},${average.AG}`,
-        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count},${average.PCR}`,
-        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)},${(average.AG + average.PCR)}`,
+        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count},${average.AG},${average.AGNegative},${average.AGPositivityrate}`,
+        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count},${average.PCR},${average.PCRNegative},${average.PCRPositivityrate}`,
+        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)},${(average.AG + average.PCR)},${(average.AGNegative + average.PCRNegative)},${(average.AGPositivityrate + average.PCRPositivityrate)}`,
         ``,
         `INCREASE=${hospitalizations.increase}`,
         `INTENSIVE=${hospitalizations.patient.intensive}`,
         `VENTILATION=${hospitalizations.patient.ventilation}`,
+        `AVERAGE=${average.Hospitalizations}`
         `TOTAL=${hospitalizations.total}`,
         ``,
         table.toString(),
@@ -93,6 +117,14 @@ const getAverage = (AGtoday, PCRtoday) => {
 
     AG.average = average.AG;
     PCR.average = average.PCR;
+
+    AG.negatives_average = average.AGNegative;
+    PCR.negatives_average = average.PCRNegative;
+
+    AG.positivity_rate_average = average.AGPositivityrate;
+    PCR.positivity_rate_average = average.PCRPositivityrate;
+
+    hospitalizations.average = average.Hospitalizations;
     
     files['latest.txt'] = { contents: content }
     files['latest.json'] = { contents: JSON.stringify({
