@@ -5,13 +5,17 @@ const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const getAverage = () => {
+const date = new Date();
+
+const getAverage = (AGtoday, PCRtoday) => {
     const files = glob.sync('**/**/**/latest.json');
     files.pop();
     
-    let PCRcount = 0;
-    let AGcount = 0;
+    let PCRcount = PCRtoday;
+    let AGcount = AGtoday;
     for(const file of files) {
+        if(file.includes(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`)) continue;
+
         const content = JSON.parse(fs.readFileSync(file).toString());
         PCRcount += content.PCR.positives_count;
         AGcount = content.AG.positives_count;
@@ -53,7 +57,7 @@ const getAverage = () => {
         }
     })).data.page[0]
 
-    const average = getAverage();
+    const average = getAverage(AG.positives_count, PCR.positives_count);
 
     let table = new AsciiTable('Cases');
 
@@ -71,8 +75,6 @@ const getAverage = () => {
         .addRow('Intensive', hospitalizations.patient.intensive)
         .addRow('Ventilation', hospitalizations.patient.ventilation)
         .addRow('Total', hospitalizations.total)
-
-    let date = new Date();
 
     let files = {};
     let content = [
