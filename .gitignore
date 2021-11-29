@@ -6,7 +6,6 @@ out/
 scraper/
 
 .expo/
-dist/
 npm-debug.*
 *.jks
 *.p8
