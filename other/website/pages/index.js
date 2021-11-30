@@ -238,8 +238,6 @@ export default class Home extends Component {
         }
     }
 
-    formatNumber = (number) => String(number).replace(/(.)(?=(\d{3})+$)/g,'$1,');
-
     render() {
         return (
             <div>
@@ -260,41 +258,41 @@ export default class Home extends Component {
                         <div className="card">
                             <h3>New Cases</h3>
                             <p>
-                                <font color='#ff6384'>AG: {this.formatNumber(this.cases?.AG?.positives_count)}</font><br />
-                                <font color='#35a2eb'>PCR: {this.formatNumber(this.cases?.PCR?.positives_count)}</font><br />
-                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG?.average + this.cases?.PCR?.average)}</font><br />
-                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.AG?.positives_count + this.cases?.PCR?.positives_count)}</font>
+                                <font color='#ff6384'>AG: {this.cases?.AG?.positives_count.toLocaleString('en-US')}</font><br />
+                                <font color='#35a2eb'>PCR: {this.cases?.PCR?.positives_count.toLocaleString('en-US')}</font><br />
+                                <font color='#32a852'>Average: {(this.cases?.AG?.average + this.cases?.PCR?.average).toLocaleString('en-US')}</font><br />
+                                <font color='#fcba03'>Total: {(this.cases?.AG?.positives_count + this.cases?.PCR?.positives_count).toLocaleString('en-US')}</font>
                             </p>
                         </div>
     
                         <div className="card">
                             <h3>Hospitalizations</h3>
                             <p>
-                                <font color='#ff6384'>Increase: {this.formatNumber(this.cases?.hospitalizations?.increase)}</font><br />
-                                <font color='#35a2eb'>Intensive: {this.formatNumber(this.cases?.hospitalizations?.patient?.intensive)}</font><br />
-                                <font color='#eb8634'>Ventilation: {this.formatNumber(this.cases?.hospitalizations?.patient?.ventilation)}</font><br />
-                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.hospitalizations?.average ?? 0)}</font><br />
-                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.hospitalizations?.total)}</font>
+                                <font color='#ff6384'>Increase: {this.cases?.hospitalizations?.increase.toLocaleString('en-US')}</font><br />
+                                <font color='#35a2eb'>Intensive: {this.cases?.hospitalizations?.patient?.intensive.toLocaleString('en-US')}</font><br />
+                                <font color='#eb8634'>Ventilation: {this.cases?.hospitalizations?.patient?.ventilation.toLocaleString('en-US')}</font><br />
+                                <font color='#32a852'>Average: {this.cases?.hospitalizations?.average.toLocaleString('en-US')}</font><br />
+                                <font color='#fcba03'>Total: {this.cases?.hospitalizations?.total.toLocaleString('en-US')}</font>
                             </p>
                         </div>
     
                         <div className="card">
                             <h3>Positivity Rate</h3>
                             <p>
-                                <font color='#ff6384'>AG: {this.cases?.AG.positivity_rate}</font><br />
-                                <font color='#35a2eb'>PCR: {this.cases?.PCR.positivity_rate}</font><br />
-                                <font color='#32a852'>Average: {this.cases?.AG.positivity_rate_average + this.cases?.PCR.positivity_rate_average}</font><br />
-                                <font color='#fcba03'>Total: {this.cases?.AG.positivity_rate + parseFloat(this.cases?.PCR?.positivity_rate)}</font>
+                                <font color='#ff6384'>AG: {this.cases?.AG.positivity_rate.toLocaleString('en-US')}</font><br />
+                                <font color='#35a2eb'>PCR: {this.cases?.PCR.positivity_rate.toLocaleString('en-US')}</font><br />
+                                <font color='#32a852'>Average: {(this.cases?.AG.positivity_rate_average + this.cases?.PCR.positivity_rate_average).toLocaleString('en-US')}</font><br />
+                                <font color='#fcba03'>Total: {(this.cases?.AG.positivity_rate + this.cases?.PCR?.positivity_rate).toLocaleString('en-US')}</font>
                             </p>
                         </div>
     
                         <div className="card">
                             <h3>Negative Cases</h3>
                             <p>
-                                <font color='#ff6384'>AG: {this.formatNumber(this.cases?.AG.negatives_count)}</font><br />
-                                <font color='#35a2eb'>PCR: {this.formatNumber(this.cases?.PCR.negatives_count)}</font><br />
-                                <font color='#32a852'>Average: {this.formatNumber(this.cases?.AG.negatives_average + this.cases?.PCR.negatives_average)}</font><br />
-                                <font color='#fcba03'>Total: {this.formatNumber(this.cases?.AG?.negatives_count + this.cases?.PCR?.negatives_count)}</font>
+                                <font color='#ff6384'>AG: {(this.cases?.AG.negatives_count).toLocaleString('en-US')}</font><br />
+                                <font color='#35a2eb'>PCR: {(this.cases?.PCR.negatives_count).toLocaleString('en-US')}</font><br />
+                                <font color='#32a852'>Average: {(this.cases?.AG.negatives_average + this.cases?.PCR.negatives_average).toLocaleString('en-US')}</font><br />
+                                <font color='#fcba03'>Total: {(this.cases?.AG?.negatives_count + this.cases?.PCR?.negatives_count).toLocaleString('en-US')}</font>
                             </p>
                         </div>
 
