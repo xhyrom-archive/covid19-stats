@@ -4,6 +4,7 @@ dev/
 .next/
 out/
 scraper/
+e.js
 
 .expo/
 npm-debug.*

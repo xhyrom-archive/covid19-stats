@@ -63,11 +63,19 @@ const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, Hospit
     PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
 
     let hospitalizations = {
-        increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
-        total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        //increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        //total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
         patient: {
             intensive: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-intensive -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
             ventilation: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-ventilation -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, ''))
+        }
+    }
+
+    for(const line of web.split('\n')) {
+        if(line.includes('class="govuk-heading-l govuk-!-margin-bottom-')) {
+            const lin = line.split('class="govuk-heading-l govuk-!-margin-bottom-')[1].split('</h')[0];
+            if(lin.includes('2">') && !lin.includes('REPLACE')) hospitalizations.increase = parseInt(line.split('2">')[1]);
+            else if(lin.includes('3">') && !lin.includes('REPLACE')) hospitalizations.total = parseInt(line.split('3">')[1]);
         }
     }
 
