@@ -10789,7 +10789,7 @@ const getSlovakiaStatistics = async() => {
 const getCzechiaStatistics = async() => {
     let tests = await hyttpo.request({
         method: 'GET',
-        url: `https://onemocneni-aktualne.mzcr.cz/api/v3/zakladni-prehled?apiToken=092f17e3eab82443655605ef2c59e33b`,
+        url: `https://onemocneni-aktualne.mzcr.cz/api/v3/zakladni-prehled?apiToken=${process.env.apiToken}`,
         headers: {
             'Content-Type': 'application/json'
         }

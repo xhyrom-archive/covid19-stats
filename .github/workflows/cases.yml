@@ -16,3 +16,5 @@ jobs:
         uses: xHyroM/covid19-stats/.github/actions/cases@master
         with:
           GITHUB_TOKEN: ${{secrets.ACCESS_TOKEN}}
+        env:
+          apiToken: ${{secrets.apiToken}}
