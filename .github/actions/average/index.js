@@ -3,8 +3,8 @@ const glob = require('glob');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const getAverage = () => {
-    const files = glob.sync('**/**/**/latest.json');
+const getAverage = (path) => {
+    const files = glob.sync(path);
     files.pop();
     
     let PCRcount = 0;
@@ -31,7 +31,6 @@ const getAverage = () => {
         PCRPositivityrateCount += parseFloat(content.PCR.positivity_rate);
         AGPositivityrateCount += content.AG.positivity_rate;
     }
-    console.log(PCRPositivityrateCount, PCRPositivityrateCount / files.length)
     
     return {
         PCR: PCRcount / files.length,
@@ -61,28 +60,54 @@ const getAverage = () => {
         ref: commitSha
     })
 
-    const average = getAverage();
-    const latest = JSON.parse(fs.readFileSync('latest.json').toString());
+    const averageSK = getAverage(`states/Slovakia/**/**/**/latest.json`);
+    const latestSK = JSON.parse(fs.readFileSync('/states/Slovakia/latest.json').toString());
+
+    const averageCZ = getAverage(`states/Czechia/**/**/**/latest.json`);
+    const latestCZ = JSON.parse(fs.readFileSync('/states/Czechia/latest.json').toString());
 
     const content = [
+        `**SLOVAKIA**`,
+        ``,
         `**POSITIVITY RATE**`,
-        `PCR: ${latest.PCR.positivity_rate}, AG: ${latest.AG.positivity_rate}`,
-        `(Average) PCR: ${average.PCRPositivityrate}, AG: ${average.AGPositivityrate}`,
+        `PCR: ${latestSK.PCR.positivity_rate}, AG: ${latestSK.AG.positivity_rate}`,
+        `(Average) PCR: ${averageSK.PCRPositivityrate}, AG: ${averageSK.AGPositivityrate}`,
         ``,
         `**NEW CASES**`,
-        `PCR: ${latest.PCR.positives_count}, AG: ${latest.AG.positives_count}`,
-        `(Average) PCR: ${average.PCR}, AG: ${average.AG}`,
+        `PCR: ${latestSK.PCR.positives_count}, AG: ${latestSK.AG.positives_count}`,
+        `(Average) PCR: ${averageSK.PCR}, AG: ${averageSK.AG}`,
         ``,
         `**NEGATIVE CASES**`,
-        `PCR: ${latest.PCR.negatives_count}, AG: ${latest.AG.negatives_count}`,
-        `(Average) PCR: ${average.PCRNegative}, AG: ${average.AGNegative}`,
+        `PCR: ${latestSK.PCR.negatives_count}, AG: ${latestSK.AG.negatives_count}`,
+        `(Average) PCR: ${averageSK.PCRNegative}, AG: ${averageSK.AGNegative}`,
         ``,
         `**HOSPITALIZATIONS**`,
-        `Increase: ${latest.hospitalizations.increase}`,
-        `Intensive: ${latest.hospitalizations.patient.intensive}`,
-        `Ventilation: ${latest.hospitalizations.patient.ventilation}`,
-        `Average: ${average.Hospitalizations}`,
-        `Total: ${latest.hospitalizations.total}`
+        `Increase: ${latestSK.hospitalizations.increase}`,
+        `Intensive: ${latestSK.hospitalizations.patient.intensive}`,
+        `Ventilation: ${latestSK.hospitalizations.patient.ventilation}`,
+        `Average: ${averageSK.Hospitalizations}`,
+        `Total: ${latestSK.hospitalizations.total}`,
+        ``,
+        `**CZECHIA**`,
+        ``,
+        `**POSITIVITY RATE**`,
+        `PCR: ${latestCZ.PCR.positivity_rate}, AG: ${latestCZ.AG.positivity_rate}`,
+        `(Average) PCR: ${averageCZ.PCRPositivityrate}, AG: ${averageCZ.AGPositivityrate}`,
+        ``,
+        `**NEW CASES**`,
+        `PCR: ${latestCZ.PCR.positives_count}, AG: ${latestCZ.AG.positives_count}`,
+        `(Average) PCR: ${averageCZ.PCR}, AG: ${averageCZ.AG}`,
+        ``,
+        `**NEGATIVE CASES**`,
+        `PCR: ${latestCZ.PCR.negatives_count}, AG: ${latestCZ.AG.negatives_count}`,
+        `(Average) PCR: ${averageCZ.PCRNegative}, AG: ${averageCZ.AGNegative}`,
+        ``,
+        `**HOSPITALIZATIONS**`,
+        `Increase: ${latestCZ.hospitalizations.increase}`,
+        `Intensive: ${latestCZ.hospitalizations.patient.intensive}`,
+        `Ventilation: ${latestCZ.hospitalizations.patient.ventilation}`,
+        `Average: ${averageCZ.Hospitalizations}`,
+        `Total: ${latestCZ.hospitalizations.total}`
     ].join('\n');
 
     await octokit.rest.repos.createCommitComment({

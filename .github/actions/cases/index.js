@@ -5,6 +5,9 @@ const AsciiTable = require('ascii-table');
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+Number.prototype.pad = function() {
+    return (this < 10 ? '0' : '') + this;
+};
 const date = new Date();
 
 const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, HospitalizationsToday, AGPositvityToday, PCRPositvityToday) => {
@@ -49,11 +52,8 @@ const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, Hospit
     }
 }
 
-(async() => {
-    const github_token = core.getInput('GITHUB_TOKEN', { required: true });
-    const octokit = github.getOctokit(github_token);
-    require("octokit-commit-multiple-files")(octokit);
 
+const getSlovakiaStatistics = async() => {
     const web = await (await hyttpo.get('https://korona.gov.sk/koronavirus-na-slovensku-v-cislach/')).data;
     let PCR = {
         positives_count: parseInt(web.split('<!-- REPLACE:koronastats-positives-delta -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
@@ -134,30 +134,136 @@ const getAverage = (AGtoday, PCRtoday, AGTodayNegative, PCRTodayNegative, Hospit
 
     hospitalizations.average = average.Hospitalizations;
     
-    files['latest.txt'] = { contents: content }
-    files['latest.json'] = { contents: JSON.stringify({
+    files['states/Slovakia/latest.txt'] = { contents: content }
+    files['states/Slovakia/latest.json'] = { contents: JSON.stringify({
         AG,
         PCR,
         hospitalizations
     }) }
-    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
-    files[`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
+    files[`states/Slovakia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
+    files[`states/Slovakia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
         AG,
         PCR,
         hospitalizations
     }) }
 
-    // Check
-    const latestOldContent = await octokit.rest.repos.getContent({
-        owner: "xHyroM",
-        repo: "covid19-stats",
-        path: `latest.json`,
+    return files;
+}
+
+const getCzechiaStatistics = async() => {
+    let tests = await hyttpo.request({
+        method: 'GET',
+        url: `https://onemocneni-aktualne.mzcr.cz/api/v3/zakladni-prehled?apiToken=092f17e3eab82443655605ef2c59e33b`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 
-    if(latestOldContent.data.content === Buffer.from(content).toString('base64')) {
-        console.log('Any change.')
-        return;
+    let hospitalizations = await hyttpo.request({
+        method: 'GET',
+        url: `https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/hospitalizace.json`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    tests = tests.data['hydra:member'].filter(d => d.datum.includes(`${date.getFullYear().pad()}-${(date.getMonth() + 1).pad()}-${date.getDate().pad(1)}`))[0];
+    hospitalizations = hospitalizations.data.data.filter(d => d.datum.includes(`${date.getFullYear().pad()}-${date.getDate().pad(1)}-${(date.getMonth() + 1).pad()}`))[0];
+
+    let PCR = {
+        positives_count: tests.potvrzene_pripady_vcerejsi_den,
+        negatives_count: NaN,
+        positivity_rate: NaN
     }
+
+    let AG = {
+        positives_count: NaN,
+        negatives_count: NaN,
+        positivity_rate: NaN
+    }
+
+    hospitalizations = {
+        total: tests.aktualne_hospitalizovani,
+        increase: NaN,
+        patient: {
+            intensive: hospitalizations.jip,
+            ventilation: hospitalizations.kyslik
+        }
+    }
+
+    const average = getAverage(AG.positives_count, PCR.positives_count, AG.negatives_count, PCR.negatives_count, hospitalizations.total, AG.positivity_rate, PCR.positivity_rate);
+
+    let table = new AsciiTable('Cases');
+
+    table
+        .setHeading('TYPE', '%', 'Positive', 'Negative', 'Average', 'Negative Average')
+        .addRow('AG', AG.positivity_rate, AG.positives_count, AG.negatives_count, average.AG, average.AGNegative)
+        .addRow('PCR', PCR.positivity_rate, PCR.positives_count, PCR.negatives_count, average.PCR, average.PCRNegative)
+        .addRow('Total', (AG.positivity_rate + PCR.positivity_rate), (AG.positives_count + PCR.positives_count), (AG.negatives_count + PCR.negatives_count), (average.AG + average.PCR), (average.AGNegative + average.PCRNegative))
+    
+    let tableHos = new AsciiTable('Hospitalizations');
+
+    tableHos
+        .setHeading('TYPE', 'COUNT')
+        .addRow('Increase', hospitalizations.increase)
+        .addRow('Intensive', hospitalizations.patient.intensive)
+        .addRow('Ventilation', hospitalizations.patient.ventilation)
+        .addRow('Average', average.Hospitalizations)
+        .addRow('Total', hospitalizations.total)
+
+    let files = {};
+    let content = [
+        `AG=${AG.positivity_rate},${AG.positives_count},${AG.negatives_count},${average.AG},${average.AGNegative},${average.AGPositivityrate}`,
+        `PCR=${PCR.positivity_rate},${PCR.positives_count},${PCR.negatives_count},${average.PCR},${average.PCRNegative},${average.PCRPositivityrate}`,
+        `TOTAL=${(AG.positivity_rate + PCR.positivity_rate)},${(AG.positives_count + PCR.positives_count)},${(AG.negatives_count + PCR.negatives_count)},${(average.AG + average.PCR)},${(average.AGNegative + average.PCRNegative)},${(average.AGPositivityrate + average.PCRPositivityrate)}`,
+        ``,
+        `INCREASE=${hospitalizations.increase}`,
+        `INTENSIVE=${hospitalizations.patient.intensive}`,
+        `VENTILATION=${hospitalizations.patient.ventilation}`,
+        `AVERAGE=${average.Hospitalizations}`,
+        `TOTAL=${hospitalizations.total}`,
+        ``,
+        table.toString(),
+        tableHos.toString()
+    ].join('\n');
+
+    AG.average = average.AG;
+    PCR.average = average.PCR;
+
+    AG.negatives_average = average.AGNegative;
+    PCR.negatives_average = average.PCRNegative;
+
+    AG.positivity_rate_average = average.AGPositivityrate;
+    PCR.positivity_rate_average = average.PCRPositivityrate;
+
+    hospitalizations.average = average.Hospitalizations;
+    
+    files['states/Czechia/latest.txt'] = { contents: content }
+    files['states/Czechia/latest.json'] = { contents: JSON.stringify({
+        AG,
+        PCR,
+        hospitalizations
+    }) }
+    files[`states/Czechia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
+    files[`states/Czechia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
+        AG,
+        PCR,
+        hospitalizations
+    }) }
+
+    return files;
+}
+
+(async() => {
+    const github_token = core.getInput('GITHUB_TOKEN', { required: true });
+    const octokit = github.getOctokit(github_token);
+    require("octokit-commit-multiple-files")(octokit);
+
+    let globalFiles = {};
+    const slovakiaFiles = await getSlovakiaStatistics();
+    const czechiaFiles = await getCzechiaStatistics();
+
+    globalFiles = { ...slovakiaFiles, ...czechiaFiles }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
