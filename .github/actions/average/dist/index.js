@@ -9712,10 +9712,10 @@ const getAverage = (path) => {
     })
 
     const averageSK = getAverage(`states/Slovakia/**/**/**/latest.json`);
-    const latestSK = JSON.parse(fs.readFileSync('/states/Slovakia/latest.json').toString());
+    const latestSK = JSON.parse(fs.readFileSync('states/Slovakia/latest.json').toString());
 
     const averageCZ = getAverage(`states/Czechia/**/**/**/latest.json`);
-    const latestCZ = JSON.parse(fs.readFileSync('/states/Czechia/latest.json').toString());
+    const latestCZ = JSON.parse(fs.readFileSync('states/Czechia/latest.json').toString());
 
     const content = [
         `**SLOVAKIA**`,
