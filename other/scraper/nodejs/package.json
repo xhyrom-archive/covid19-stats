@@ -1,0 +1,14 @@
+{
+    "name": "covid19sk-scraper",
+    "description": "Covid19 scraper, latest news",
+    "version": "0.1.0",
+    "main": "src/index.js",
+    "author": "xHyroM",
+    "bugs": {
+        "url": "https://github.com/xHyroM/covid19-stats/issues"
+    },
+    "engines": {
+        "node": ">=16.x"
+    },
+    "homepage": "https://github.com/xHyroM/covid19-stats"
+}
