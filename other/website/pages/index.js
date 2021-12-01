@@ -26,11 +26,11 @@ export async function getStaticProps() {
         ]).catch(e => {
             return { message: 'API rate limit' }
         }).then((data) => {
-            return data[0]?.tree?.filter(f => !['.github', '.gitignore', 'README'].some(o => f.path.includes(o)) && f.path.includes('latest.json')) || { message: 'API rate limit' };
+            return data[0]?.tree?.filter(f => !['.github', '.gitignore', 'README','Czechia'].some(o => f.path.includes(o)) && f.path.includes('latest.json')) || { message: 'API rate limit' };
         });
     }
 
-    const cases = await getCases('https://xhyrom.github.io/covid19-stats/latest.json');
+    const cases = await getCases('https://xhyrom.github.io/covid19-stats/states/Slovakia/latest.json');
     const files = await getAllFiles('https://api.github.com/repos/xHyroM/covid19-stats/git/trees/master?recursive=1');
 
     return { props: { cases, files } }
@@ -80,9 +80,9 @@ export default class Home extends Component {
             const path = file.path.split('/');
             path.pop();
 
-            if(path.length === 0) continue;
+            if(path.length === 2) continue;
 
-            finalData.push([path.join('/'), data.AG.positives_count, data.PCR.positives_count, (data.AG.positives_count + data.PCR.positives_count), (data.AG.average + data.PCR.average)])
+            finalData.push([path.join('/').replace(/states\/Slovakia/g, ''), data.AG.positives_count, data.PCR.positives_count, (data.AG.positives_count + data.PCR.positives_count), (data.AG.average + data.PCR.average)])
         }
 
         let element = createElement(Chart, {
@@ -118,9 +118,9 @@ export default class Home extends Component {
             const path = file.path.split('/');
             path.pop();
 
-            if(path.length === 0) continue;
+            if(path.length === 2) continue;
 
-            finalData.push([path.join('/'), data.hospitalizations.increase, data.hospitalizations.patient.intensive, data.hospitalizations.patient.ventilation, data.hospitalizations.total, data.hospitalizations.average ?? 0])
+            finalData.push([path.join('/').replace(/states\/Slovakia/g, ''), data.hospitalizations.increase, data.hospitalizations.patient.intensive, data.hospitalizations.patient.ventilation, data.hospitalizations.total, data.hospitalizations.average ?? 0])
         }
 
         let element = createElement(Chart, {
@@ -155,9 +155,9 @@ export default class Home extends Component {
             const path = file.path.split('/');
             path.pop();
 
-            if(path.length === 0) continue;
+            if(path.length === 2) continue;
 
-            finalData.push([path.join('/'), data.AG.positivity_rate, parseFloat(data.PCR.positivity_rate), (data.AG.positivity_rate + parseFloat(data.PCR.positivity_rate)), (data.AG.positivity_rate_average + data.PCR.positivity_rate_average)])
+            finalData.push([path.join('/').replace(/states\/Slovakia/g, ''), data.AG.positivity_rate, parseFloat(data.PCR.positivity_rate), (data.AG.positivity_rate + parseFloat(data.PCR.positivity_rate)), (data.AG.positivity_rate_average + data.PCR.positivity_rate_average)])
         }
 
         let element = createElement(Chart, {
@@ -192,9 +192,9 @@ export default class Home extends Component {
             const path = file.path.split('/');
             path.pop();
 
-            if(path.length === 0) continue;
+            if(path.length === 2) continue;
 
-            finalData.push([path.join('/'), data.AG.negatives_count, data.PCR.negatives_count, (data.AG.negatives_count + data.PCR.negatives_count), (data.AG.negatives_average + data.PCR.negatives_average)])
+            finalData.push([path.join('/').replace(/states\/Slovakia/g, ''), data.AG.negatives_count, data.PCR.negatives_count, (data.AG.negatives_count + data.PCR.negatives_count), (data.AG.negatives_average + data.PCR.negatives_average)])
         }
         
 
