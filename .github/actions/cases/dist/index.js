@@ -10909,7 +10909,7 @@ const getCzechiaStatistics = async() => {
         changes: [
           {
             message: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} stats`,
-            files: files,
+            files: globalFiles,
           }
         ],
     });
