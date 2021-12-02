@@ -109,4 +109,10 @@ class Scraper {
     }
 }
 
-module.exports = Scraper;
+module.exports = {
+    Scraper: Scraper,
+    CountryList: {
+        'CZ': 'Czechia',
+        'SK': 'Slovakia'
+    }
+};

@@ -1,3 +1,8 @@
+export const enum CountryList {
+    CZ = 'Czechia',
+    SK = 'Slovakia',
+}
+
 type ScraperData = Date | {
     year: String,
     month: String,
@@ -84,9 +89,9 @@ interface getAverageData {
 }
 
 export class Scraper {
-    public getAll(path?: ScraperData): getAllData;
-    public getCases(path?: ScraperData): getCasesData;
-    public getPositivityRate(path?: ScraperData): getPositivityRateData;
-    public getAverage(path?: ScraperData): getAverageData;
-    public getHospitalizations(path?: ScraperData): HospitalitazionsData;
+    public getAll(country: CountryList, path?: ScraperData): getAllData;
+    public getCases(country: CountryList, path?: ScraperData): getCasesData;
+    public getPositivityRate(country: CountryList, path?: ScraperData): getPositivityRateData;
+    public getAverage(country: CountryList, path?: ScraperData): getAverageData;
+    public getHospitalizations(country: CountryList, path?: ScraperData): HospitalitazionsData;
 }

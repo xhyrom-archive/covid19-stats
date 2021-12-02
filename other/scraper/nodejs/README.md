@@ -1,8 +1,8 @@
 ```js
-const covid19 = require('covid19sk-scraper');
+const { Scraper, CountryList } = require('covid19-wrapper');
 
 (async() => {
-    const cases = await covid19.getHospitalizations();
+    const cases = await Scraper.getAll(CountryList.SK);
     console.log(cases)
 })();
 ```
@@ -13,3 +13,8 @@ All Methods:
 - getAverage
 - getPositivityRate
 - getHospitalizations
+
+Date:
+```js
+Scraper.getAll(CountryList.SK, new Date('December 1, 2021 00:00'))
+```
