@@ -1,6 +1,6 @@
 {
-    "name": "covid19sk-scraper",
-    "description": "Covid19 scraper, latest news",
+    "name": "covid19-wrapper",
+    "description": "Covid19 wrapper, latest news",
     "version": "0.1.0",
     "main": "src/index.js",
     "author": "xHyroM",

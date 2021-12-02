@@ -5,14 +5,15 @@ const { getPath } = require('./structures/Utils');
 class Scraper {
     /**
      * Get everything
+     * @param {CountryList} country
      * @param {ScraperDate} path 
      */
-    static getAll = async(path) => {
+    static getAll = async(country, path) => {
         if(!path) path = 'latest.json';
         else path = getPath(path);
 
         return await (async() => new Promise((resolve, reject) => {
-            hyttpo.get(`https://xhyrom.github.io/covid19-stats/${path}`)
+            hyttpo.get(`https://xhyrom.github.io/covid19-stats/states/${country}/${path}`)
                 .catch(e => {
                     resolve({ error: e.statusCode, message: e.statusText });
                 })
@@ -25,14 +26,15 @@ class Scraper {
 
     /**
      * Get new cases
+     * @param {CountryList} country
      * @param {ScraperDate} path 
      */
-    static getCases = async(path) => {
+    static getCases = async(country, path) => {
         if(!path) path = 'latest.json';
         else path = getPath(path);
 
         return await (async() => new Promise((resolve, reject) => {
-            hyttpo.get(`https://xhyrom.github.io/covid19-stats/${path}`)
+            hyttpo.get(`https://xhyrom.github.io/covid19-stats/states/${country}/${path}`)
                 .catch(e => {
                     resolve({ error: e.statusCode, message: e.statusText });
                 })
@@ -45,14 +47,15 @@ class Scraper {
 
     /**
      * Get positivity rate
+     * @param {CountryList} country
      * @param {ScraperDate} path 
      */
-     static getPositivityRate = async(path) => {
+     static getPositivityRate = async(country, path) => {
         if(!path) path = 'latest.json';
         else path = getPath(path);
 
         return await (async() => new Promise((resolve, reject) => {
-            hyttpo.get(`https://xhyrom.github.io/covid19-stats/${path}`)
+            hyttpo.get(`https://xhyrom.github.io/covid19-stats/states/${country}/${path}`)
                 .catch(e => {
                     resolve({ error: e.statusCode, message: e.statusText });
                 })
@@ -65,14 +68,15 @@ class Scraper {
 
     /**
      * Get average
+     * @param {CountryList} country
      * @param {ScraperDate} path 
      */
-     static getAverage = async(path) => {
+     static getAverage = async(country, path) => {
         if(!path) path = 'latest.json';
         else path = getPath(path);
 
         return await (async() => new Promise((resolve, reject) => {
-            hyttpo.get(`https://xhyrom.github.io/covid19-stats/${path}`)
+            hyttpo.get(`https://xhyrom.github.io/covid19-stats/states/${country}/${path}`)
                 .catch(e => {
                     resolve({ error: e.statusCode, message: e.statusText });
                 })
@@ -85,14 +89,15 @@ class Scraper {
 
     /**
      * Get hospitalizations
+     * @param {CountryList} country
      * @param {ScraperDate} path 
      */
-    static getHospitalizations = async(path) => {
+    static getHospitalizations = async(country, path) => {
         if(!path) path = 'latest.json';
         else path = getPath(path);
 
         return await (async() => new Promise((resolve, reject) => {
-            hyttpo.get(`https://xhyrom.github.io/covid19-stats/${path}`)
+            hyttpo.get(`https://xhyrom.github.io/covid19-stats/states/${country}/${path}`)
                 .catch(e => {
                     resolve({ error: e.statusCode, message: e.statusText });
                 })
