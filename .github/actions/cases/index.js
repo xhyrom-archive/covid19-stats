@@ -63,8 +63,8 @@ const getSlovakiaStatistics = async() => {
     PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
 
     let hospitalizations = {
-        //increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
-        //total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-increase -->')?.[1]?.split('<!-- /REPLACE -->')?.[0]?.replace(/\s+/g, '')),
+        total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19 -->')?.[1]?.split('<!-- /REPLACE -->')?.[0]?.replace(/\s+/g, '')),
         patient: {
             intensive: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-intensive -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
             ventilation: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-ventilation -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, ''))
