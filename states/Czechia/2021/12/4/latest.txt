@@ -1,21 +1,21 @@
-AG=NaN,NaN,NaN,80.52941176470588,NaN,NaN
-PCR=NaN,10967,NaN,11273.176470588236,NaN,NaN
-TOTAL=NaN,NaN,NaN,11353.705882352942,NaN,NaN
+AG=NaN,NaN,NaN,103.38461538461539,NaN,NaN
+PCR=NaN,17659,NaN,13764.076923076924,NaN,NaN
+TOTAL=NaN,NaN,NaN,13867.461538461539,NaN,NaN
 
 INCREASE=NaN
-INTENSIVE=379
-VENTILATION=664
-AVERAGE=4260.882352941177
-TOTAL=6431
+INTENSIVE=1184
+VENTILATION=2348
+AVERAGE=4834.461538461538
+TOTAL=6786
 
 .-------------------------------------------------------------------------.
 |                                  Cases                                  |
 |-------------------------------------------------------------------------|
 | TYPE  | % | Positive | Negative |      Average       | Negative Average |
 |-------|---|----------|----------|--------------------|------------------|
-| AG    | NaN |      NaN |      NaN |  80.52941176470588 |              NaN |
-| PCR   | NaN |    10967 |      NaN | 11273.176470588236 |              NaN |
-| Total | NaN |      NaN |      NaN | 11353.705882352942 |              NaN |
+| AG    | NaN |      NaN |      NaN | 103.38461538461539 |              NaN |
+| PCR   | NaN |    17659 |      NaN | 13764.076923076924 |              NaN |
+| Total | NaN |      NaN |      NaN | 13867.461538461539 |              NaN |
 '-------------------------------------------------------------------------'
 .---------------------------------.
 |        Hospitalizations         |
@@ -23,8 +23,8 @@ TOTAL=6431
 |    TYPE     |       COUNT       |
 |-------------|-------------------|
 | Increase    |               NaN |
-| Intensive   |               379 |
-| Ventilation |               664 |
-| Average     | 4260.882352941177 |
-| Total       |              6431 |
+| Intensive   |              1184 |
+| Ventilation |              2348 |
+| Average     | 4834.461538461538 |
+| Total       |              6786 |
 '---------------------------------'
