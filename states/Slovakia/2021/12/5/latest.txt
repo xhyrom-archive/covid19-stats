@@ -26,5 +26,5 @@ TOTAL=3409
 | Intensive   |   624 |
 | Ventilation |   298 |
 | Average     |   0   |
-| Total       |   3409    |
+| Total       |  3409 |
 '---------------------'
