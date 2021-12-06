@@ -134,7 +134,6 @@ const getSlovakiaStatistics = async() => {
 
     hospitalizations.average = average.Hospitalizations;
     
-    console.log(hospitalizations)
     files['states/Slovakia/latest.txt'] = { contents: content }
     files['states/Slovakia/latest.json'] = { contents: JSON.stringify({
         AG,
