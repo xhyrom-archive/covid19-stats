@@ -25,6 +25,6 @@ TOTAL=undefined
 | Increase    |     1 |
 | Intensive   |   624 |
 | Ventilation |   298 |
-| Average     |   NaN |
-| Total       |       |
+| Average     |   0   |
+| Total       |   3409    |
 '---------------------'
