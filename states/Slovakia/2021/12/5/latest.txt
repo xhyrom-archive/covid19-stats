@@ -5,8 +5,8 @@ TOTAL=44.588,8285,25199,11141.94117647059,29949.117647058825,NaN
 INCREASE=1
 INTENSIVE=624
 VENTILATION=298
-AVERAGE=NaN
-TOTAL=undefined
+AVERAGE=0
+TOTAL=3409
 
 .--------------------------------------------------------------------------------.
 |                                     Cases                                      |
