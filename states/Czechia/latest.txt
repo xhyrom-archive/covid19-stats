@@ -1,6 +1,6 @@
-AG=NaN,NaN,NaN,54,NaN,NaN
-PCR=NaN,6325,NaN,12078.588235294117,NaN,NaN
-TOTAL=NaN,NaN,NaN,12132.588235294117,NaN,NaN
+AG=NaN,NaN,NaN,48.31578947368421,NaN,NaN
+PCR=NaN,6325,NaN,10562.842105263158,NaN,NaN
+TOTAL=NaN,NaN,NaN,10611.157894736843,NaN,NaN
 
 INCREASE=NaN
 INTENSIVE=38
@@ -13,9 +13,9 @@ TOTAL=6338
 |-------------------------------------------------------------------------|
 | TYPE  | % | Positive | Negative |      Average       | Negative Average |
 |-------|---|----------|----------|--------------------|------------------|
-| AG    | NaN |      NaN |      NaN |                 54 |              NaN |
-| PCR   | NaN |     6325 |      NaN | 12078.588235294117 |              NaN |
-| Total | NaN |      NaN |      NaN | 12132.588235294117 |              NaN |
+| AG    | NaN |      NaN |      NaN |  48.31578947368421 |              NaN |
+| PCR   | NaN |     6325 |      NaN | 10562.842105263158 |              NaN |
+| Total | NaN |      NaN |      NaN | 10611.157894736843 |              NaN |
 '-------------------------------------------------------------------------'
 .---------------------.
 |  Hospitalizations   |
