@@ -63,16 +63,8 @@ const getSlovakiaStatistics = async() => {
     PCR.negatives_count = PCR.negatives_count - PCR.positives_count;
 
     let hospitalizations = {
-        increase: parseInt(
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19-increase -->')[1] &&
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19-increase -->')[1].split('<!-- /REPLACE -->')[0] &&
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')
-        ),
-        total: parseInt(
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19 -->')[1] &&
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19 -->')[1].split('<!-- /REPLACE -->')[0] && 
-            web.split('<!-- REPLACE:koronastats-hospitalized-covid19 -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')
-        ),
+        //increase: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-increase -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
+        total: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19 -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
         patient: {
             intensive: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-intensive -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, '')),
             ventilation: parseInt(web.split('<!-- REPLACE:koronastats-hospitalized-covid19-ventilation -->')[1].split('<!-- /REPLACE -->')[0].replace(/\s+/g, ''))
@@ -83,7 +75,7 @@ const getSlovakiaStatistics = async() => {
         if(line.includes('class="govuk-heading-l govuk-!-margin-bottom-')) {
             const lin = line.split('class="govuk-heading-l govuk-!-margin-bottom-')[1].split('</h')[0];
             if(lin.includes('2">') && !lin.includes('REPLACE')) hospitalizations.increase = parseInt(line.split('2">')[1]);
-            else if(lin.includes('3">') && !lin.includes('REPLACE')) hospitalizations.total = parseInt(line.split('3">')[1]);
+            //else if(lin.includes('3">') && !lin.includes('REPLACE')) hospitalizations.total = parseInt(line.split('3">')[1]);
         }
     }
 
@@ -142,6 +134,7 @@ const getSlovakiaStatistics = async() => {
 
     hospitalizations.average = average.Hospitalizations;
     
+    console.log(hospitalizations)
     files['states/Slovakia/latest.txt'] = { contents: content }
     files['states/Slovakia/latest.json'] = { contents: JSON.stringify({
         AG,
