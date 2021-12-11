@@ -22,7 +22,7 @@ TOTAL=3388
 |--------------------------------|
 |    TYPE     |      COUNT       |
 |-------------|------------------|
-| Increase    |              NaN |
+| Increase    |              0 |
 | Intensive   |              585 |
 | Ventilation |              293 |
 | Average     | 4406.37037037037 |
