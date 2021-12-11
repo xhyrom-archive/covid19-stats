@@ -74,7 +74,10 @@ const getSlovakiaStatistics = async() => {
     for(const line of web.split('\n')) {
         if(line.includes('class="govuk-heading-l govuk-!-margin-bottom-')) {
             const lin = line.split('class="govuk-heading-l govuk-!-margin-bottom-')[1].split('</h')[0];
-            if(lin.includes('2">') && !lin.includes('REPLACE')) hospitalizations.increase = parseInt(line.split('2">')[1]);
+            if(lin.includes('2">') && !lin.includes('REPLACE')) {
+                if(line.split('2">')[1].includes('–')) hospitalizations.increase = 0;
+                else hospitalizations.increase = parseInt(line.split('2">')[1]);
+            }
             //else if(lin.includes('3">') && !lin.includes('REPLACE')) hospitalizations.total = parseInt(line.split('3">')[1]);
         }
     }
