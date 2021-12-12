@@ -189,8 +189,8 @@ const getCzechiaStatistics = async() => {
         total: tests.aktualne_hospitalizovani,
         increase: NaN,
         patient: {
-            intensive: hospitalizations.jip,
-            ventilation: hospitalizations.kyslik
+            intensive: hospitalizations && hospitalizations.jip || 0,
+            ventilation: hospitalizations && hospitalizations.kyslik || 0
         }
     }
 
