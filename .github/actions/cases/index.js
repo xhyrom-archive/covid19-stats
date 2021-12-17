@@ -143,8 +143,8 @@ const getSlovakiaStatistics = async() => {
         PCR,
         hospitalizations
     }) }
-    files[`states/Slovakia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
-    files[`states/Slovakia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
+    files[`states/Slovakia/${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/latest.txt`] = { contents: content }
+    files[`states/Slovakia/${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/latest.json`] = { contents: JSON.stringify({
         AG,
         PCR,
         hospitalizations
@@ -247,8 +247,8 @@ const getCzechiaStatistics = async() => {
         PCR,
         hospitalizations
     }) }
-    files[`states/Czechia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.txt`] = { contents: content }
-    files[`states/Czechia/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/latest.json`] = { contents: JSON.stringify({
+    files[`states/Czechia/${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/latest.txt`] = { contents: content }
+    files[`states/Czechia/${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/latest.json`] = { contents: JSON.stringify({
         AG,
         PCR,
         hospitalizations
@@ -275,7 +275,7 @@ const getCzechiaStatistics = async() => {
         createBranch: false,
         changes: [
           {
-            message: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} stats`,
+            message: `${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()} stats`,
             files: globalFiles,
           }
         ],

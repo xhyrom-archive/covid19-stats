@@ -23,10 +23,11 @@ export async function getStaticProps() {
     const getAllFiles = async(url) => {
         return Promise.all([
             fetch(url).then(res => res.json())
-        ]).catch(e => {
+        ]).catch(() => {
             return { message: 'API rate limit' }
         }).then((data) => {
-            return data[0]?.tree?.filter(f => !['.github', '.gitignore', 'README','Czechia'].some(o => f.path.includes(o)) && f.path.includes('latest.json')) || { message: 'API rate limit' };
+            const dejta = data[0]?.tree?.filter(f => f.path.includes('states/Slovakia') && !f.path.includes('latest.txt') && f.path !== 'states/Slovakia/latest.json' && f.path.includes('latest.json'));
+            return dejta || { message: 'API rate limit' };
         });
     }
 
@@ -45,8 +46,8 @@ export default class Home extends Component {
 
         if(!this.cases?.message?.includes('rate limit') && process.browser) localStorage.setItem('cases', JSON.stringify(this.cases))
         else if(process.browser) this.cases = JSON.parse(localStorage.getItem('cases'));
-    
-        if(!this.files?.message?.includes('rate limit') && process.browser) localStorage.setItem('files', JSON.stringify(this.files))
+
+        if(!this.files?.message?.includes('rate limit') && process.browser) localStorage.setItem('files', JSON.stringify(this.files));
         else if(process.browser) this.files = JSON.parse(localStorage.getItem('files'));
 
         if(process.browser) {
