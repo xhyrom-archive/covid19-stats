@@ -264,9 +264,9 @@ const getCzechiaStatistics = async() => {
 
     let globalFiles = {};
     const slovakiaFiles = await getSlovakiaStatistics();
-    const czechiaFiles = await getCzechiaStatistics();
+    //const czechiaFiles = await getCzechiaStatistics();
 
-    globalFiles = { ...slovakiaFiles, ...czechiaFiles }
+    globalFiles = { ...slovakiaFiles }
 
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
